@@ -10,8 +10,11 @@ namespace HelloWorld
             app.MapGet("/", () => { });
             app.MapGet("/plain", async context =>
             {
+                string plainText = "Hello, World!";
+
                 context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Hello, World!");
+                context.Response.ContentLength = plainText.Length;
+                await context.Response.WriteAsync(plainText);
             });
 
             app.Run();
