@@ -13,15 +13,15 @@ namespace Server.Controller
         }
 
         [HttpGet]
-        public string SerializeJson()
+        public IActionResult SerializeJson()
         {
-            var data = new ResponseData { message = "Hello, World!" };
-            var json = JsonSerializer.Serialize(data);
+            ResponseData data = new ResponseData() { message = "Hello, World!" };
+            string json = JsonSerializer.Serialize(data);
 
             Response.ContentType = "application/json";
             Response.ContentLength = json.Length;
 
-            return json;
+            return Content(json);
         }
     }
 }

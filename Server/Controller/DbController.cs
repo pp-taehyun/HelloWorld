@@ -7,7 +7,7 @@ namespace Server.Controller
     public class DbController : ControllerBase
     {
         //[HttpGet]
-        //public string ExecuteSingleQuery()
+        //public IActionResult ExecuteSingleQuery()
         //{
         //    Response.ContentType = "application/json";
         //}

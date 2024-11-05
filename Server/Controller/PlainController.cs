@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server;
 
-namespace JsonSerialization.Controller
+namespace Server.Controller
 {
     [Route("[controller]")]
     [ApiController]
     public class PlainController : ControllerBase
     {
         [HttpGet]
-        public ActionResult PlainText()
+        public IActionResult PlainText()
         {
             var helloWorld = "Hello, World!";
 

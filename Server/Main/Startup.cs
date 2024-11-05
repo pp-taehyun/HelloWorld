@@ -1,6 +1,6 @@
 ﻿namespace Server.Main
 {
-    class Startup
+    public class Startup
     {
         public IConfiguration Configuration { get; init; }
 

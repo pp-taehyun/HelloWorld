@@ -1,0 +1,4 @@
+changeLogFile=changelog.xml
+url=jdbc:mysql://localhost/{0}
+username={1}
+password={2}
