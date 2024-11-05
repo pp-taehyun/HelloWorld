@@ -11,7 +11,7 @@ namespace Server.Main
 
         private static void Main(string[] args)
         {
-            SetupDatabase("config.json");
+            SetupDatabase("config.json", false);
 
             CreateHostBuilder(args).Build().Run();
         }
@@ -24,7 +24,7 @@ namespace Server.Main
             });
         }
 
-        private static void SetupDatabase(string configurationFilePath)
+        private static void SetupDatabase(string configurationFilePath, bool createDummyData)
         {
             string config = string.Join("\r\n", File.ReadAllLines(configurationFilePath, Encoding.UTF8));
             JsonElement root = JsonDocument.Parse(config).RootElement;
@@ -40,15 +40,18 @@ namespace Server.Main
                                              $"Pwd={password};");
 
             // 테이블 데이터 생성
-            Random random = new Random();
-            for (int i = 0; i < 10_000; ++i)
+            if (createDummyData)
             {
-                var world = new Database.World()
-                                {
-                                    Id = i + 1,
-                                    RandomNumber = random.Next(0, 10_000) + 1
-                                };
-                Connection!.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+                Random random = new Random();
+                for (int i = 0; i < 10_000; ++i)
+                {
+                    Database.World world = new Database.World()
+                    {
+                        Id = i + 1,
+                        RandomNumber = random.Next(0, 10_000) + 1
+                    };
+                    Connection!.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+                }
             }
 
             // liquibase.properties 파일이 없을 경우 새로 생성
