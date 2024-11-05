@@ -1,7 +1,4 @@
-﻿
-
-
-namespace Server
+﻿namespace Server.Main
 {
     class Startup
     {
