@@ -1,6 +1,7 @@
 using MySql.Data.MySqlClient;
 using System.Text;
 using System.Text.Json;
+using Dapper;
 
 namespace Server.Main
 {
@@ -25,7 +26,7 @@ namespace Server.Main
 
         private static void SetupDatabase(string configurationFilePath)
         {
-            string config = string.Join("\r\n", File.ReadAllLines("config.json", Encoding.UTF8));
+            string config = string.Join("\r\n", File.ReadAllLines(configurationFilePath, Encoding.UTF8));
             JsonElement root = JsonDocument.Parse(config).RootElement;
 
             string database = root.GetProperty("database").ToString();
@@ -37,7 +38,19 @@ namespace Server.Main
                                              $"Database={database};" +
                                              $"Uid={username};" +
                                              $"Pwd={password};");
-            
+
+            // 테이블 데이터 생성
+            Random random = new Random();
+            for (int i = 0; i < 10_000; ++i)
+            {
+                var world = new Database.World()
+                                {
+                                    Id = i + 1,
+                                    RandomNumber = random.Next(0, 10_000) + 1
+                                };
+                Connection!.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+            }
+
             // liquibase.properties 파일이 없을 경우 새로 생성
             if (!File.Exists("liquibase.properties"))
             {
