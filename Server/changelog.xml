@@ -5,4 +5,12 @@
         xmlns:pro="http://www.liquibase.org/xml/ns/pro"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
     http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd ">
+	<changeSet id="1" author="taehyun">
+		<createTable tableName="World">
+			<column name="id" type="INT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="randomNumber" type="INT"/>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>
