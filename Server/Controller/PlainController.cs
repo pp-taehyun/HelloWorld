@@ -8,10 +8,14 @@ namespace JsonSerialization.Controller
     public class PlainController : ControllerBase
     {
         [HttpGet]
-        public string Plaintext()
+        public ActionResult PlainText()
         {
-            var HelloWorld = "Hello, World!";
-            return HelloWorld;
+            var helloWorld = "Hello, World!";
+
+            Response.ContentType = "text/plain";
+            Response.ContentLength = helloWorld.Length;
+
+            return Content(helloWorld);
         }
     }
 }
