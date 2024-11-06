@@ -11,7 +11,10 @@ namespace Server.Database
         {
             get
             {
-                return new MySqlConnection(ConnectionString);
+                var conn = new MySqlConnection(ConnectionString);
+                conn.Open();
+
+                return conn;
             }
         }
 

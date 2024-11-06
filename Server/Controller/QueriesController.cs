@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using Server.Database;
 using System.Text;
 using System.Text.Json;
@@ -25,10 +26,13 @@ namespace Server.Controller
                 builder.Append(string.Format(selectQuery, Random.Next(0, 10_000) + 1));
             }
 
-            using SqlMapper.GridReader multi = await DatabaseManager.Connection.QueryMultipleAsync(builder.ToString());
-            while (!multi.IsConsumed)
+            using (MySqlConnection conn = DatabaseManager.Connection)
             {
-                worldList.Add(multi.Read<World>().Single());
+                using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(builder.ToString());
+                while (!multi.IsConsumed)
+                {
+                    worldList.Add(multi.Read<World>().Single());
+                }
             }
 
             string json = JsonSerializer.Serialize(worldList);
