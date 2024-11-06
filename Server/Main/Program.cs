@@ -38,25 +38,7 @@ namespace Server.Main
                                              $"Uid={username};" +
                                              $"Pwd={password};");
 
-            // 테이블 데이터 생성
-            if (createDummyData)
-            {
-                DatabaseManager.Connection.Execute("TRUNCATE TABLE World");
-                DatabaseManager.Connection.Execute("TRUNCATE TABLE CachedWorld");
-
-                var random = new Random();
-                var world = new World();
-                var cachedWorld = new CachedWorld();
-                for (var i = 0; i < 10_000; ++i)
-                {
-                    world.id = cachedWorld.id = i + 1;
-                    world.randomNumber = cachedWorld.randomNumber = random.Next(0, 10_000) + 1;
-         
-                    DatabaseManager.Connection.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
-                    DatabaseManager.Connection.Execute("INSERT INTO CachedWorld VALUES(@Id, @RandomNumber)", cachedWorld);
-                }
-            }
-
+            /// TODO: 외부 스크립트로 변경
             // liquibase.properties 파일이 없을 경우 새로 생성
             if (!File.Exists("liquibase.properties"))
             {
@@ -72,6 +54,25 @@ namespace Server.Main
                     }
                 }
             }
+            // 테이블 데이터 생성
+            if (createDummyData)
+            {
+                DatabaseManager.Connection.Execute("TRUNCATE TABLE World");
+                DatabaseManager.Connection.Execute("TRUNCATE TABLE CachedWorld");
+
+                var random = new Random();
+                var world = new World();
+                var cachedWorld = new CachedWorld();
+                for (var i = 0; i < 10_000; ++i)
+                {
+                    world.id = cachedWorld.id = i + 1;
+                    world.randomNumber = cachedWorld.randomNumber = random.Next(0, 10_000) + 1;
+
+                    DatabaseManager.Connection.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+                    DatabaseManager.Connection.Execute("INSERT INTO CachedWorld VALUES(@Id, @RandomNumber)", cachedWorld);
+                }
+            }
+            /// 
         }
     }
 }
