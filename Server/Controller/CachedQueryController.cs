@@ -1,26 +1,26 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Server.Database;
-using System.Text;
 using System.Text.Json;
+using System.Text;
 
 namespace Server.Controller
 {
-    [Route("[controller]")]
+    [Route("cached-queries")]
     [ApiController]
-    public class QueriesController : ControllerBase
+    public class CachedQueryController : ControllerBase
     {
         private static Random Random { get; } = new Random();
 
         [HttpGet]
-        private async Task<IActionResult> ExecuteMultipleQueries(int queries)
+        public async Task<IActionResult> ExecuteCachedMultipleQueries(int count)
         {
-            List<World> worldList = new List<World>();
-            StringBuilder builder = new StringBuilder();
+            List<World> worldList = new();
+            StringBuilder builder = new();
 
             var selectQuery = "SELECT * FROM World WHERE Id = {0};";
 
-            for (int i = 0; i < Math.Clamp(queries, 1, 500); i++)
+            for (int i = 0; i < Math.Clamp(count, 1, 500); i++)
             {
                 builder.Append(string.Format(selectQuery, Random.Next(0, 10_000) + 1));
             }

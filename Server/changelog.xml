@@ -13,4 +13,12 @@
 			<column name="randomNumber" type="INT"/>
 		</createTable>
 	</changeSet>
+	<changeSet id="2" author="taehyun">
+		<createTable tableName="CachedWorld">
+			<column name="id" type="INT">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="randomNumber" type="INT"/>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>

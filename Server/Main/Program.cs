@@ -2,13 +2,12 @@ using MySql.Data.MySqlClient;
 using System.Text;
 using System.Text.Json;
 using Dapper;
+using Server.Database;
 
 namespace Server.Main
 {
     public class Program
     {
-        public static MySqlConnection? Connection { get; private set; }
-
         private static void Main(string[] args)
         {
             SetupDatabase("config.json", false);
@@ -26,6 +25,8 @@ namespace Server.Main
 
         private static void SetupDatabase(string configurationFilePath, bool createDummyData)
         {
+            DatabaseManager.Initialize();
+
             string config = string.Join("\r\n", File.ReadAllLines(configurationFilePath, Encoding.UTF8));
             JsonElement root = JsonDocument.Parse(config).RootElement;
 
@@ -34,7 +35,7 @@ namespace Server.Main
             string password = root.GetProperty("password").ToString();
 
             // config.json을 통한 MySQL 접속
-            Connection = new MySqlConnection($"Server=localhost;" +
+            DatabaseManager.Connection = new MySqlConnection($"Server=localhost;" +
                                              $"Database={database};" +
                                              $"Uid={username};" +
                                              $"Pwd={password};");
@@ -42,15 +43,19 @@ namespace Server.Main
             // 테이블 데이터 생성
             if (createDummyData)
             {
+                DatabaseManager.Connection.Execute("TRUNCATE TABLE World");
+                DatabaseManager.Connection.Execute("TRUNCATE TABLE CachedWorld");
+
                 Random random = new Random();
+                World world = new World();
+                CachedWorld cachedWorld = new CachedWorld();
                 for (int i = 0; i < 10_000; ++i)
                 {
-                    Database.World world = new Database.World()
-                    {
-                        Id = i + 1,
-                        RandomNumber = random.Next(0, 10_000) + 1
-                    };
-                    Connection!.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+                    world.id = cachedWorld.id = i + 1;
+                    world.randomNumber = cachedWorld.randomNumber = random.Next(0, 10_000) + 1;
+         
+                    DatabaseManager.Connection.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+                    DatabaseManager.Connection.Execute("INSERT INTO CachedWorld VALUES(@Id, @RandomNumber)", cachedWorld);
                 }
             }
 

@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Server.Main;
+using Server.Database;
 using System.Text.Json;
 
 namespace Server.Controller
@@ -14,11 +14,11 @@ namespace Server.Controller
         [HttpGet]
         public IActionResult ExecuteSingleQuery()
         {
-            Database.World selectedWorld = Program.Connection!.Query<Database.World>("SELECT * FROM World WHERE Id = @Id",
-                                                            new
-                                                            {
-                                                                Id = Random.Next(0, 10_000) + 1
-                                                            }).First();
+            World selectedWorld = DatabaseManager.Connection.Query<World>("SELECT * FROM World WHERE Id = @Id",
+                                                                        new
+                                                                        {
+                                                                            Id = Random.Next(0, 10_000) + 1
+                                                                        }).First();
 
             string json = JsonSerializer.Serialize(selectedWorld);
 

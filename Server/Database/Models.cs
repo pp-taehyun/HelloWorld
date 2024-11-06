@@ -2,7 +2,13 @@
 {
     public class World
     {
-        public int Id { get; set; }
-        public int RandomNumber { get; set; }
+        public int id { get; set; }
+        public int randomNumber { get; set; }
+    }
+
+    public class CachedWorld
+    {
+        public int id { get; set; }
+        public int randomNumber { get; set; }
     }
 }
