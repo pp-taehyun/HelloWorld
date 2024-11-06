@@ -19,7 +19,7 @@ namespace Server.Controller
         {
             count = Math.Clamp(count, 1, 500);
 
-            var worldList = new List<World>();
+            var worldList = new List<CachedWorld>();
             var builder = new StringBuilder();
             IDatabase redisDatabase = DatabaseManager.RedisDatabase;
 
@@ -30,7 +30,7 @@ namespace Server.Controller
                 string? cachedValue = redisDatabase.StringGet((i + 1).ToString());
                 if (cachedValue is not null)
                 {
-                    worldList.Add(new World
+                    worldList.Add(new CachedWorld
                     {
                         id = i + 1,
                         randomNumber = Int32.Parse(cachedValue)
@@ -45,7 +45,7 @@ namespace Server.Controller
             using SqlMapper.GridReader multi = await DatabaseManager.Connection.QueryMultipleAsync(builder.ToString());
             while (!multi.IsConsumed)
             {
-                World world = multi.Read<World>().Single();
+                CachedWorld world = multi.Read<CachedWorld>().Single();
 
                 var cacheKey = $"world:{world.id.ToString()}";
                 redisDatabase.StringSet(cacheKey, world.randomNumber);
