@@ -33,10 +33,10 @@ namespace Server.Main
             string password = root.GetProperty("password").ToString();
 
             // config.json을 통한 MySQL 접속
-            DatabaseManager.Connection = new MySqlConnection($"Server=localhost;" +
+            DatabaseManager.ConnectionString = $"Server=localhost;" +
                                              $"Database={database};" +
                                              $"Uid={username};" +
-                                             $"Pwd={password};");
+                                             $"Pwd={password};";
 
             /// TODO: 외부 스크립트로 변경
             // liquibase.properties 파일이 없을 경우 새로 생성
@@ -44,7 +44,6 @@ namespace Server.Main
             {
                 string[] propertiesTemplate = File.ReadAllLines("Templates/liquibasePropertiesTemplate.txt",
                                                                 Encoding.UTF8);
-
                 using (StreamWriter writer = File.CreateText("liquibase.properties"))
                 {
                     foreach (string line in propertiesTemplate)

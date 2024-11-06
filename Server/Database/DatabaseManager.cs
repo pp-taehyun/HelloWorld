@@ -5,7 +5,15 @@ namespace Server.Database
 {
     public static class DatabaseManager
     {
-        public static MySqlConnection Connection { get; set; } = new();
+        public static string ConnectionString { get; set; } = "";
+
+        public static MySqlConnection Connection
+        {
+            get
+            {
+                return new MySqlConnection(ConnectionString);
+            }
+        }
 
         public static IDatabase RedisDatabase
         {
