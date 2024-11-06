@@ -46,7 +46,10 @@ namespace Server.Controller
             while (!multi.IsConsumed)
             {
                 World world = multi.Read<World>().Single();
-                redisDatabase.StringSet(world.id.ToString(), world.randomNumber);
+
+                var cacheKey = $"world:{world.id.ToString()}";
+                redisDatabase.StringSet(cacheKey, world.randomNumber);
+                redisDatabase.KeyExpire(cacheKey, TimeSpan.FromMinutes(3));
 
                 worldList.Add(world);
             }
