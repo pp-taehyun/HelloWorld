@@ -9,14 +9,15 @@ namespace Server.Controller
     [ApiController]
     public class DbController : ControllerBase
     {
+        private static Random Random { get; } = new Random();
+
         [HttpGet]
         public IActionResult ExecuteSingleQuery()
         {
-            Random random = new Random();
             Database.World selectedWorld = Program.Connection!.Query<Database.World>("SELECT * FROM World WHERE Id = @Id",
-                                                            new Database.World()
+                                                            new
                                                             {
-                                                                Id = random.Next(0, 10_000) + 1
+                                                                Id = Random.Next(0, 10_000) + 1
                                                             }).First();
 
             string json = JsonSerializer.Serialize(selectedWorld);
