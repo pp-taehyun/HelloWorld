@@ -27,7 +27,7 @@ namespace Server.Controller
 
             for (var i = 0; i < count; i++)
             {
-                string? cachedValue = redisDatabase.StringGet((i + 1).ToString());
+                string? cachedValue = redisDatabase.StringGet($"world:{i + 1}");
                 if (cachedValue is not null)
                 {
                     worldList.Add(new CachedWorld
@@ -47,7 +47,7 @@ namespace Server.Controller
             {
                 CachedWorld world = multi.Read<CachedWorld>().Single();
 
-                var cacheKey = $"world:{world.id.ToString()}";
+                var cacheKey = $"world:{world.id}";
                 redisDatabase.StringSet(cacheKey, world.randomNumber);
                 redisDatabase.KeyExpire(cacheKey, TimeSpan.FromMinutes(3));
 
