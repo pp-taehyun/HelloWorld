@@ -33,7 +33,11 @@ namespace Server.Controller
                 };
                 worldList.Add(world);
 
-                DatabaseManager.Connection.Query<World>(sql, world);
+                DatabaseManager.Connection.Query<World>(sql, new
+                {
+                    Id = selectId,
+                    RandomNumber = newNumber
+                });
             }
 
             string json = JsonSerializer.Serialize(worldList);
