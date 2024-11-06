@@ -6,11 +6,11 @@ namespace Server.Controller
     [ApiController]
     public class PlainController : ControllerBase
     {
+        private static readonly string helloWorld = "Hello, World!";
+
         [HttpGet]
         public IActionResult PlainText()
         {
-            var helloWorld = "Hello, World!";
-
             Response.ContentType = "text/plain";
             Response.ContentLength = helloWorld.Length;
 
