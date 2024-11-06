@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Database;
 using System.Text.Json;
 using System.Text;
+using System.Linq;
+using StackExchange.Redis;
 
 namespace Server.Controller
 {
@@ -10,26 +12,47 @@ namespace Server.Controller
     [ApiController]
     public class CachedQueryController : ControllerBase
     {
-        private static Random Random { get; } = new Random();
+        private static Random Random { get; } = new();
 
         [HttpGet]
         public async Task<IActionResult> ExecuteCachedMultipleQueries(int count)
         {
-            List<World> worldList = new();
-            StringBuilder builder = new();
+            count = Math.Clamp(count, 1, 500);
+
+            var worldList = new List<World>();
+            var builder = new StringBuilder();
+            IDatabase redisDatabase = DatabaseManager.RedisDatabase;
 
             var selectQuery = "SELECT * FROM World WHERE Id = {0};";
 
-            for (int i = 0; i < Math.Clamp(count, 1, 500); i++)
+            for (var i = 0; i < count; i++)
             {
-                builder.Append(string.Format(selectQuery, Random.Next(0, 10_000) + 1));
+                string? cachedValue = redisDatabase.StringGet((i + 1).ToString());
+                if (cachedValue is not null)
+                {
+                    worldList.Add(new World
+                    {
+                        id = i + 1,
+                        randomNumber = Int32.Parse(cachedValue)
+                    });
+                }
+                else
+                {
+                    builder.Append(string.Format(selectQuery, Random.Next(0, 10_000) + 1));
+                }
             }
 
             using SqlMapper.GridReader multi = await DatabaseManager.Connection.QueryMultipleAsync(builder.ToString());
             while (!multi.IsConsumed)
             {
-                worldList.Add(multi.Read<World>().Single());
+                World world = multi.Read<World>().Single();
+                redisDatabase.StringSet(world.id.ToString(), world.randomNumber);
+
+                worldList.Add(world);
             }
+
+            if (worldList.Count != count)
+                throw new Exception("Does not match requested count.");
 
             string json = JsonSerializer.Serialize(worldList);
 

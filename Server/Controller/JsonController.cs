@@ -15,7 +15,7 @@ namespace Server.Controller
         [HttpGet]
         public IActionResult SerializeJson()
         {
-            ResponseData data = new ResponseData() { message = "Hello, World!" };
+            var data = new ResponseData() { message = "Hello, World!" };
             string json = JsonSerializer.Serialize(data);
 
             Response.ContentType = "application/json";

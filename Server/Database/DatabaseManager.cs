@@ -6,12 +6,15 @@ namespace Server.Database
     public static class DatabaseManager
     {
         public static MySqlConnection Connection { get; set; } = new();
-        public static IDatabase? RedisDatabase { get; private set; }
 
-        public static void Initialize()
+        public static IDatabase RedisDatabase
         {
-            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost");
-            RedisDatabase = redis.GetDatabase();
+            get
+            {
+                return redisConnection.GetDatabase();
+            }
         }
+
+        private static ConnectionMultiplexer redisConnection => ConnectionMultiplexer.Connect("localhost");
     }
 }

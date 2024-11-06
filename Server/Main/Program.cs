@@ -25,8 +25,6 @@ namespace Server.Main
 
         private static void SetupDatabase(string configurationFilePath, bool createDummyData)
         {
-            DatabaseManager.Initialize();
-
             string config = string.Join("\r\n", File.ReadAllLines(configurationFilePath, Encoding.UTF8));
             JsonElement root = JsonDocument.Parse(config).RootElement;
 
@@ -46,10 +44,10 @@ namespace Server.Main
                 DatabaseManager.Connection.Execute("TRUNCATE TABLE World");
                 DatabaseManager.Connection.Execute("TRUNCATE TABLE CachedWorld");
 
-                Random random = new Random();
-                World world = new World();
-                CachedWorld cachedWorld = new CachedWorld();
-                for (int i = 0; i < 10_000; ++i)
+                var random = new Random();
+                var world = new World();
+                var cachedWorld = new CachedWorld();
+                for (var i = 0; i < 10_000; ++i)
                 {
                     world.id = cachedWorld.id = i + 1;
                     world.randomNumber = cachedWorld.randomNumber = random.Next(0, 10_000) + 1;

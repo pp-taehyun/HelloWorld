@@ -15,10 +15,10 @@ namespace Server.Controller
         public IActionResult ExecuteSingleQuery()
         {
             World selectedWorld = DatabaseManager.Connection.Query<World>("SELECT * FROM World WHERE Id = @Id",
-                                                                        new
-                                                                        {
-                                                                            Id = Random.Next(0, 10_000) + 1
-                                                                        }).First();
+                new
+                {
+                    Id = Random.Next(0, 10_000) + 1
+                }).First();
 
             string json = JsonSerializer.Serialize(selectedWorld);
 

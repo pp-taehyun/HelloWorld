@@ -10,17 +10,17 @@ namespace Server.Controller
     [ApiController]
     public class QueriesController : ControllerBase
     {
-        private static Random Random { get; } = new Random();
+        private static Random Random { get; } = new();
 
         [HttpGet]
-        private async Task<IActionResult> ExecuteMultipleQueries(int queries)
+        public async Task<IActionResult> ExecuteMultipleQueries(int queries)
         {
-            List<World> worldList = new List<World>();
-            StringBuilder builder = new StringBuilder();
+            var worldList = new List<World>();
+            var builder = new StringBuilder();
 
             var selectQuery = "SELECT * FROM World WHERE Id = {0};";
 
-            for (int i = 0; i < Math.Clamp(queries, 1, 500); i++)
+            for (var i = 0; i < Math.Clamp(queries, 1, 500); i++)
             {
                 builder.Append(string.Format(selectQuery, Random.Next(0, 10_000) + 1));
             }
