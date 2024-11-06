@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text;
 using System.Linq;
 using StackExchange.Redis;
+using MySql.Data.MySqlClient;
 
 namespace Server.Controller
 {
@@ -42,16 +43,19 @@ namespace Server.Controller
                 }
             }
 
-            using SqlMapper.GridReader multi = await DatabaseManager.Connection.QueryMultipleAsync(builder.ToString());
-            while (!multi.IsConsumed)
+            using (MySqlConnection conn = DatabaseManager.GetConnection())
             {
-                CachedWorld world = multi.Read<CachedWorld>().Single();
+                using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(builder.ToString());
+                while (!multi.IsConsumed)
+                {
+                    CachedWorld world = multi.Read<CachedWorld>().Single();
 
-                var cacheKey = $"world:{world.id}";
-                redisDatabase.StringSet(cacheKey, world.randomNumber);
-                redisDatabase.KeyExpire(cacheKey, TimeSpan.FromMinutes(3));
+                    var cacheKey = $"world:{world.id}";
+                    redisDatabase.StringSet(cacheKey, world.randomNumber);
+                    redisDatabase.KeyExpire(cacheKey, TimeSpan.FromMinutes(3));
 
-                worldList.Add(world);
+                    worldList.Add(world);
+                }
             }
 
             if (worldList.Count != count)

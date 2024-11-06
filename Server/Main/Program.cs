@@ -56,19 +56,22 @@ namespace Server.Main
             // 테이블 데이터 생성
             if (createDummyData)
             {
-                DatabaseManager.Connection.Execute("TRUNCATE TABLE World");
-                DatabaseManager.Connection.Execute("TRUNCATE TABLE CachedWorld");
-
-                var random = new Random();
-                var world = new World();
-                var cachedWorld = new CachedWorld();
-                for (var i = 0; i < 10_000; ++i)
+                using (MySqlConnection conn = DatabaseManager.GetConnection())
                 {
-                    world.id = cachedWorld.id = i + 1;
-                    world.randomNumber = cachedWorld.randomNumber = random.Next(0, 10_000) + 1;
+                    conn.Execute("TRUNCATE TABLE World");
+                    conn.Execute("TRUNCATE TABLE CachedWorld");
 
-                    DatabaseManager.Connection.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
-                    DatabaseManager.Connection.Execute("INSERT INTO CachedWorld VALUES(@Id, @RandomNumber)", cachedWorld);
+                    var random = new Random();
+                    var world = new World();
+                    var cachedWorld = new CachedWorld();
+                    for (var i = 0; i < 10_000; ++i)
+                    {
+                        world.id = cachedWorld.id = i + 1;
+                        world.randomNumber = cachedWorld.randomNumber = random.Next(0, 10_000) + 1;
+
+                        conn.Execute("INSERT INTO World VALUES(@Id, @RandomNumber)", world);
+                        conn.Execute("INSERT INTO CachedWorld VALUES(@Id, @RandomNumber)", cachedWorld);
+                    }
                 }
             }
             /// 

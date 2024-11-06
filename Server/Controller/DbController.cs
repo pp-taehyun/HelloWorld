@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using Server.Database;
 using System.Text.Json;
 
@@ -15,17 +16,20 @@ namespace Server.Controller
         public IActionResult ExecuteSingleQuery()
         {
             var sql = "SELECT * FROM World WHERE Id = @Id";
-            World selectedWorld = DatabaseManager.Connection.Query<World>(sql, new 
+            using (MySqlConnection conn = DatabaseManager.GetConnection())
             {
-                Id = Random.Next(0, 10_000) + 1
-            }).First();
+                World selectedWorld = conn.Query<World>(sql, new
+                {
+                    Id = Random.Next(0, 10_000) + 1
+                }).First();
 
-            string json = JsonSerializer.Serialize(selectedWorld);
+                string json = JsonSerializer.Serialize(selectedWorld);
 
-            Response.ContentType = "application/json";
-            Response.ContentLength = json.Length;
+                Response.ContentType = "application/json";
+                Response.ContentLength = json.Length;
 
-            return Content(json);
+                return Content(json);
+            }
         }
     }
 }

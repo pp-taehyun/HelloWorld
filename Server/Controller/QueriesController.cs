@@ -26,7 +26,7 @@ namespace Server.Controller
                 builder.Append(string.Format(selectQuery, Random.Next(0, 10_000) + 1));
             }
 
-            using (MySqlConnection conn = DatabaseManager.Connection)
+            using (MySqlConnection conn = DatabaseManager.GetConnection())
             {
                 using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(builder.ToString());
                 while (!multi.IsConsumed)

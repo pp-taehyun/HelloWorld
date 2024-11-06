@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.Json;
+using MySql.Data.MySqlClient;
 
 namespace Server.Controller
 {
@@ -33,11 +34,14 @@ namespace Server.Controller
                 };
                 worldList.Add(world);
 
-                DatabaseManager.Connection.Query<World>(sql, new
+                using (MySqlConnection conn = DatabaseManager.GetConnection())
                 {
-                    Id = selectId,
-                    RandomNumber = newNumber
-                });
+                    conn.Query<World>(sql, new
+                    {
+                        Id = selectId,
+                        RandomNumber = newNumber
+                    });
+                }
             }
 
             string json = JsonSerializer.Serialize(worldList);

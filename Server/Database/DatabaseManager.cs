@@ -7,15 +7,12 @@ namespace Server.Database
     {
         public static string ConnectionString { get; set; } = "";
 
-        public static MySqlConnection Connection
+        public static MySqlConnection GetConnection()
         {
-            get
-            {
-                var conn = new MySqlConnection(ConnectionString);
-                conn.Open();
+            var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
 
-                return conn;
-            }
+            return conn;
         }
 
         public static IDatabase RedisDatabase
