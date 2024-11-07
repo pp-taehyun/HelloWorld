@@ -33,10 +33,13 @@ namespace Server.Main
             string password = root.GetProperty("password").ToString();
 
             // config.json을 통한 MySQL 접속
-            DatabaseManager.ConnectionString = $"Server=localhost;" +
-                                             $"Database={database};" +
-                                             $"Uid={username};" +
-                                             $"Pwd={password};";
+            DatabaseManager.ConnectionOption = new MySqlConnectionStringBuilder()
+            {
+                Server = "localhost",
+                Database = database,
+                UserID = username,
+                Password = password,
+            };
 
             /// TODO: 외부 스크립트로 변경
             // liquibase.properties 파일이 없을 경우 새로 생성

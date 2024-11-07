@@ -5,11 +5,11 @@ namespace Server.Database
 {
     public static class DatabaseManager
     {
-        public static string ConnectionString { get; set; } = "";
+        public static MySqlConnectionStringBuilder ConnectionOption { get; set; } = new();
 
         public static MySqlConnection GetConnection()
         {
-            var conn = new MySqlConnection(ConnectionString);
+            var conn = new MySqlConnection(ConnectionOption.ConnectionString);
             return conn;
         }
 
