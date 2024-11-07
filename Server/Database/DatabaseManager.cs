@@ -10,8 +10,6 @@ namespace Server.Database
         public static MySqlConnection GetConnection()
         {
             var conn = new MySqlConnection(ConnectionString);
-            conn.Open();
-
             return conn;
         }
 
